@@ -1,5 +1,5 @@
 import "./App.css";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import Container from "react-bootstrap/Container";
 import InputGroup from "react-bootstrap/InputGroup";
@@ -10,45 +10,35 @@ import Table from "react-bootstrap/Table";
 function App() {
   const [data, setData] = useState([]);
   const [title, setTitle] = useState("");
+  const [limit, setLimit] = useState(10);
   const [error, setError] = useState("");
-  const [offset, setOffset] = useState(1);
   const [meta, setMeta] = useState([]);
-  const [search, setSearch] = useState(true);
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const {
-          data: { data },
-          data: { meta },
-        } = await axios.get(
-          `https://global.atdtravel.com/api/products?geo=en&offset=${offset}&title=${title}`
-        );
-        setData(data);
-        setMeta(meta);
-        setError("");
-      } catch (err) {
-        return setError(err.message);
-      }
-    };
-    getData();
-  }, [offset, search]);
+  const getData = async () => {
+    try {
+      const {
+        data: { data },
+        data: { meta },
+      } = await axios.get(
+        `https://global.atdtravel.com/api/products?geo=en&limit=${limit}&title=${title}`
+      );
+      setData(data);
+      setMeta(meta);
+      setError("");
+    } catch (err) {
+      return setError(err.message);
+    }
+  };
 
   const handleTyping = (event) => {
-    setTitle(event.target.value);
+    return setTitle(event.target.value);
   };
 
-  const handlePreviousPage = () => {
-    setOffset(offset - 10);
+  const handleShowAll = () => {
+    setLimit(meta.total_count);
+    getData();
   };
 
-  const handleNextPage = () => {
-    setOffset(offset + 10);
-  };
-
-  const handleSearch = () => {
-    setSearch(!search);
-  };
   return (
     <>
       <Container>
@@ -65,7 +55,7 @@ function App() {
             <Button
               variant="outline-secondary"
               id="button-addon2"
-              onClick={handleSearch}
+              onClick={getData}
             >
               Search
             </Button>
@@ -117,19 +107,12 @@ function App() {
           ""
         ) : (
           <div className="pagination-buttons">
-            {offset <= 0 ? (
-              ""
+            {meta.total_count === data.length ? (
+              `Thats all atractions in ${data[0].dest}`
             ) : (
-              <Button variant="info" onClick={handlePreviousPage} size="lg">
-                Previous page
+              <Button variant="info" onClick={handleShowAll} size="lg">
+                See all {meta.total_count}
               </Button>
-            )}
-            {offset < meta.total_count ? (
-              <Button variant="primary" onClick={handleNextPage} size="lg">
-                Next page
-              </Button>
-            ) : (
-              ""
             )}
           </div>
         )}
