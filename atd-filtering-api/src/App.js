@@ -13,15 +13,18 @@ function App() {
   const [limit, setLimit] = useState(10);
   const [error, setError] = useState("");
   const [offset, setOffset] = useState(0);
+  const [meta, setMeta] = useState([]);
 
   const getData = async () => {
     try {
       const {
         data: { data },
+        data: { meta },
       } = await axios.get(
         `https://global.atdtravel.com/api/products?geo=en&offset=${offset}&limit=${limit}&title=${title}`
       );
       setData(data);
+      setMeta(meta);
       setError("");
     } catch (err) {
       return setError(err.message);
@@ -110,14 +113,22 @@ function App() {
         {!data.length ? (
           ""
         ) : (
-          <>
-            <Button variant="info" onClick={handlePreviousPage} size="lg">
-              Previous page
-            </Button>
-            <Button variant="primary" onClick={handleNextPage} size="lg">
-              Next page
-            </Button>
-          </>
+          <div className="pagination-buttons">
+            {offset === 0 ? (
+              ""
+            ) : (
+              <Button variant="info" onClick={handlePreviousPage} size="lg">
+                Previous page
+              </Button>
+            )}
+            {limit >= meta.total_count ? (
+              ""
+            ) : (
+              <Button variant="primary" onClick={handleNextPage} size="lg">
+                Next page
+              </Button>
+            )}
+          </div>
         )}
         <br />
       </Container>

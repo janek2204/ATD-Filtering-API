@@ -7,3 +7,8 @@ img {
 .mb-3.input-group {
   width: 40%;
 }
+
+.pagination-buttons {
+  display: flex;
+  justify-content: center;
+}
