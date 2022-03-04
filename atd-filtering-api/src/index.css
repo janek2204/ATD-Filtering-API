@@ -3,3 +3,7 @@ img {
   margin-left: auto;
   margin-right: auto;
 }
+
+.mb-3.input-group {
+  width: 40%;
+}

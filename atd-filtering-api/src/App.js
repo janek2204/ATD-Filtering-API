@@ -12,13 +12,14 @@ function App() {
   const [title, setTitle] = useState("");
   const [limit, setLimit] = useState(10);
   const [error, setError] = useState("");
+  const [offset, setOffset] = useState(0);
 
   const getData = async () => {
     try {
       const {
         data: { data },
       } = await axios.get(
-        `https://global.atdtravel.com/api/products?geo=en&limit=${limit}&title=${title}`
+        `https://global.atdtravel.com/api/products?geo=en&offset=${offset}&limit=${limit}&title=${title}`
       );
       setData(data);
       setError("");
@@ -31,8 +32,15 @@ function App() {
     return setTitle(event.target.value);
   };
 
-  const handleLimit = () => {
-    setLimit(limit + 1);
+  const handlePreviousPage = () => {
+    setLimit(limit - 10);
+    setOffset(offset - 10);
+    getData();
+  };
+
+  const handleNextPage = () => {
+    setOffset(offset + 10);
+    setLimit(limit + 10);
     getData();
   };
   return (
@@ -59,16 +67,20 @@ function App() {
         </InputGroup>
         <br />
         {error.length > 0 ? <h1>Title do not exist!</h1> : ""}
-        <br />
         {data.length ? (
           <Table striped bordered hover variant="dark">
             <thead>
               <tr>
-                <th></th>
+                <th>Image</th>
                 <th>Title</th>
                 <th>Destination</th>
-                <th>Adult: Price From</th>
-                <th>Child: Price From</th>
+                <th>
+                  Adult: <br />
+                  Price From
+                </th>
+                <th>
+                  Child: <br /> Price From
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -98,10 +110,16 @@ function App() {
         {!data.length ? (
           ""
         ) : (
-          <Button variant="info" onClick={handleLimit}>
-            Load More Events
-          </Button>
+          <>
+            <Button variant="info" onClick={handlePreviousPage} size="lg">
+              Previous page
+            </Button>
+            <Button variant="primary" onClick={handleNextPage} size="lg">
+              Next page
+            </Button>
+          </>
         )}
+        <br />
       </Container>
     </>
   );
