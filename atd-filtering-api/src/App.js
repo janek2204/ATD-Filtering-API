@@ -10,14 +10,19 @@ function App() {
   const [data, setData] = useState([]);
   const [title, setTitle] = useState("");
   const [limit, setLimit] = useState(10);
+  const [error, setError] = useState();
 
   const getData = async () => {
-    const {
-      data: { data },
-    } = await axios.get(
-      `https://global.atdtravel.com/api/products?geo=en&limit=${limit}&title=${title}`
-    );
-    console.log(data);
+    try {
+      const {
+        data: { data },
+      } = await axios.get(
+        `https://global.atdtravel.com/api/products?geo=en&limit=${limit}&title=${title}`
+      );
+      setData(data);
+    } catch (err) {
+      return setError(err.message);
+    }
   };
 
   const handleTyping = (event) => {
@@ -38,18 +43,28 @@ function App() {
             aria-describedby="basic-addon2"
             onChange={handleTyping}
           />
-          <Button
-            variant="outline-secondary"
-            id="button-addon2"
-            onClick={getData}
-          >
-            Search
-          </Button>
+          {title.length <= 0 ? (
+            ""
+          ) : (
+            <Button
+              variant="outline-secondary"
+              id="button-addon2"
+              onClick={getData}
+            >
+              Search
+            </Button>
+          )}
         </InputGroup>
         <br />
-        <Button variant="info" onClick={handleLimit}>
-          Load More Events
-        </Button>
+
+        <br />
+        {data.length <= 0 ? (
+          " "
+        ) : (
+          <Button variant="info" onClick={handleLimit}>
+            Load More Events
+          </Button>
+        )}
       </Container>
     </>
   );
