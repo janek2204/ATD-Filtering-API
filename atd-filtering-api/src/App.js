@@ -1,7 +1,12 @@
 import "./App.css";
+import Container from "react-bootstrap/Container";
 
 function App() {
-  return <h1>hi!</h1>;
+  return (
+    <Container>
+      <h1>hi!</h1>
+    </Container>
+  );
 }
 
 export default App;
