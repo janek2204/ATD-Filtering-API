@@ -39,6 +39,7 @@ function App() {
 
   const handleTyping = (event) => {
     setTitle(event.target.value);
+    handleFiltering();
   };
 
   const handleNextPage = () => {
@@ -71,21 +72,10 @@ function App() {
             aria-describedby="basic-addon2"
             onChange={handleTyping}
           />
-          {title.length <= 0 ? (
-            ""
-          ) : (
-            <Button
-              variant="outline-secondary"
-              id="button-addon2"
-              onClick={handleFiltering}
-            >
-              Search
-            </Button>
-          )}
         </InputGroup>
         <br />
-        {error.length > 0 ? <h1>Title do not exist!</h1> : ""}
-        {!filtering.length ? (
+        {error.length > 0 ? <h1>Something went wrong!</h1> : ""}
+        {!title.length ? (
           <Table striped bordered hover variant="dark">
             <thead>
               <tr>
@@ -102,41 +92,23 @@ function App() {
               </tr>
             </thead>
             <tbody>
-              {newData.length <= 0
-                ? data.map((advert) => {
-                    return (
-                      <tr key={advert.id}>
-                        <td>
-                          <img src={advert.img_sml} alt={advert.dest} />
-                        </td>
-                        <td>{advert.title}</td>
-                        <td>{advert.dest}</td>
-                        <td>{advert.price_from_adult}</td>
-                        <td>
-                          {!advert.price_from_child
-                            ? "N/A"
-                            : advert.price_from_child}
-                        </td>
-                      </tr>
-                    );
-                  })
-                : newData.map((advert) => {
-                    return (
-                      <tr key={advert.id}>
-                        <td>
-                          <img src={advert.img_sml} alt={advert.dest} />
-                        </td>
-                        <td>{advert.title}</td>
-                        <td>{advert.dest}</td>
-                        <td>{advert.price_from_adult}</td>
-                        <td>
-                          {!advert.price_from_child
-                            ? "N/A"
-                            : advert.price_from_child}
-                        </td>
-                      </tr>
-                    );
-                  })}
+              {newData.map((advert) => {
+                return (
+                  <tr key={advert.id}>
+                    <td>
+                      <img src={advert.img_sml} alt={advert.dest} />
+                    </td>
+                    <td>{advert.title}</td>
+                    <td>{advert.dest}</td>
+                    <td>{advert.price_from_adult}</td>
+                    <td>
+                      {!advert.price_from_child
+                        ? "N/A"
+                        : advert.price_from_child}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
         ) : (
