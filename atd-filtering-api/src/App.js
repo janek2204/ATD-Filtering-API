@@ -12,12 +12,6 @@ function App() {
   const [newData, setNewData] = useState([]);
   const [offset, setOffset] = useState(0);
   const [meta, setMeta] = useState([]);
-
-  console.log("data --->", data);
-  console.log("new data ---->", newData);
-  console.log("offset --->", offset);
-  console.log("meta count----->", meta.total_count);
-
   const [title, setTitle] = useState("");
   const [error, setError] = useState([]);
 
@@ -27,7 +21,7 @@ function App() {
         data: { data },
         data: { meta },
       } = await axios.get(
-        `https://global.atdtravel.com/api/products?geo=en&offset=${offset}&limit=1&title=${title}`
+        `https://global.atdtravel.com/api/products?geo=en&offset=${offset}&limit=10&title=${title}`
       );
       setMeta(meta);
       if (newData.length > 0) {
@@ -65,7 +59,6 @@ function App() {
       <Container>
         <div className="centering-div">
           <h1 className="result-text">Product search</h1>
-          <h1></h1>
           <InputGroup className="mb-3">
             <FormControl
               placeholder="Type here...."
@@ -84,10 +77,22 @@ function App() {
               </Button>
             )}
           </InputGroup>
+          <br />
+          {newData.length > 0 ? (
+            <h1 className="result-text">{meta.total_count} results found</h1>
+          ) : (
+            ""
+          )}
         </div>
 
         <br />
-        {error ? <h1 className="result-text">{error.err_desc}</h1> : ""}
+        {error ? (
+          <div className="centering-div">
+            <h1 className="result-text">{error.err_desc}</h1>
+          </div>
+        ) : (
+          ""
+        )}
         <div className="cards-container">
           {newData.map((advert) => {
             return (
@@ -123,9 +128,22 @@ function App() {
         </div>
         <br />
         <div className="button">
-          <button onClick={handleNextPage}>clik</button>
+          {offset < meta.total_count ? (
+            <Button variant="primary" onClick={handleNextPage} size="lg">
+              More results
+            </Button>
+          ) : (
+            ""
+          )}
+          {offset > meta.total_count ? (
+            <h1 className="result-text">
+              You reached all {meta.total_count} results for this search!
+            </h1>
+          ) : (
+            ""
+          )}
+          <br />
         </div>
-        <br />
       </Container>
     </>
   );
