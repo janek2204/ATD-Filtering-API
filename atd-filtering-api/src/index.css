@@ -1,14 +1,41 @@
+@import url("https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap");
+
 img {
   display: block;
   margin-left: auto;
   margin-right: auto;
 }
 
-.mb-3.input-group {
-  width: 40%;
+input.form-control {
+  width: 25%;
+}
+
+.input {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .pagination-buttons {
   display: flex;
   justify-content: center;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 2px;
+}
+
+.text {
+  font-family: "Luckiest Guy", cursive;
+}
+
+.bg-dark.text-white.card {
+  border-bottom-right-radius: 20px;
+  border-bottom-left-radius: 20px;
+  margin-bottom: 5px;
 }

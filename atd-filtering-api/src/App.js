@@ -2,10 +2,9 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Container from "react-bootstrap/Container";
-import InputGroup from "react-bootstrap/InputGroup";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
-import Table from "react-bootstrap/Table";
+import Card from "react-bootstrap/Card";
 
 function App() {
   const [data, setData] = useState([]);
@@ -14,20 +13,19 @@ function App() {
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
   const [offset, setOffset] = useState(0);
-  const [meta, setMeta] = useState([]);
   const [filtering, setFiltering] = useState([]);
+
+  const currency = "£";
 
   const getData = async () => {
     try {
       const {
         data: { data },
-        data: { meta },
       } = await axios.get(
         `https://global.atdtravel.com/api/products?geo=en&offset=${offset}&limit=10`
       );
       if (newData.length <= 0) setNewData(data);
       else setData(data);
-      setMeta(meta);
     } catch (err) {
       return setError(err.message);
     }
@@ -52,9 +50,10 @@ function App() {
 
     const filter = newData.filter((advert) => {
       const advertToLower = advert.title.toLowerCase();
+
       if (advertToLower.includes(toLower)) {
         return advert;
-      }
+      } else return;
     });
     setFiltering(filter);
   };
@@ -62,93 +61,96 @@ function App() {
   return (
     <>
       <Container>
-        <h1>Product search</h1>
-        <p>newData length {newData.length}</p>
-        <p>offset {offset}</p>
-        <p>Filtering array length: {filtering.length}</p>
-        <InputGroup className="mb-3">
+        <div className="input">
+          <h1 className="text">Product search</h1>
           <FormControl
             placeholder="Type here...."
             aria-describedby="basic-addon2"
             onChange={handleTyping}
           />
-        </InputGroup>
+        </div>
+
         <br />
         {error.length > 0 ? <h1>Something went wrong!</h1> : ""}
         {!title.length ? (
-          <Table striped bordered hover variant="dark">
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Title</th>
-                <th>Destination</th>
-                <th>
-                  Adult: <br />
-                  Price From
-                </th>
-                <th>
-                  Child: <br /> Price From
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {newData.map((advert) => {
-                return (
-                  <tr key={advert.id}>
-                    <td>
-                      <img src={advert.img_sml} alt={advert.dest} />
-                    </td>
-                    <td>{advert.title}</td>
-                    <td>{advert.dest}</td>
-                    <td>{advert.price_from_adult}</td>
-                    <td>
-                      {!advert.price_from_child
-                        ? "N/A"
-                        : advert.price_from_child}
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </Table>
+          <div className="cards-container">
+            {newData.map((advert) => {
+              return (
+                <>
+                  <Card
+                    className="bg-dark text-white"
+                    style={{ width: "20rem" }}
+                  >
+                    <Card.Img
+                      variant="top"
+                      src={advert.img_sml}
+                      alt={advert.dest}
+                      style={{
+                        minWidth: "19rem",
+                        minHeight: "15rem",
+                      }}
+                    />
+                    <Card.Body>
+                      <Card.Title>{advert.title}</Card.Title>
+                      <Card.Text>City: {advert.dest}</Card.Text>
+                      <Card.Text>
+                        Adult tikcets from: {advert.price_from_adult}
+                        {currency}
+                      </Card.Text>
+                      <Card.Text>
+                        Child tickets from: {advert.price_from_child}
+                        {currency}
+                      </Card.Text>
+                    </Card.Body>
+                  </Card>
+                  <br />
+                </>
+              );
+            })}
+          </div>
         ) : (
           <>
-            <h1>We have {filtering.length} atractions for you!</h1> <br />
-            <Table striped bordered hover variant="dark">
-              <thead>
-                <tr>
-                  <th>Image</th>
-                  <th>Title</th>
-                  <th>Destination</th>
-                  <th>
-                    Adult: <br />
-                    Price From
-                  </th>
-                  <th>
-                    Child: <br /> Price From
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtering.map((advert) => {
-                  return (
-                    <tr key={advert.id}>
-                      <td>
-                        <img src={advert.img_sml} alt={advert.dest} />
-                      </td>
-                      <td>{advert.title}</td>
-                      <td>{advert.dest}</td>
-                      <td>{advert.price_from_adult}</td>
-                      <td>
-                        {!advert.price_from_child.length
-                          ? "N/A"
-                          : advert.price_from_child}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </Table>
+            <div className="input">
+              <h2 className="text">
+                We have {filtering.length} atractions for you!
+              </h2>
+            </div>
+            <br />
+            <div className="cards-container">
+              {filtering.map((advert) => {
+                return (
+                  <>
+                    <Card
+                      className="bg-dark text-white"
+                      style={{ width: "20rem" }}
+                    >
+                      <Card.Img
+                        variant="top"
+                        src={advert.img_sml}
+                        alt={advert.dest}
+                        style={{
+                          minWidth: "19rem",
+                          minHeight: "15rem",
+                        }}
+                      />
+                      <Card.Body>
+                        <Card.Title>{advert.title}</Card.Title>
+                        <Card.Text>City: {advert.dest}</Card.Text>
+                        <Card.Text>
+                          Adult tikcets from: {advert.price_from_adult}
+                          {currency}
+                        </Card.Text>
+                        <Card.Text>
+                          Child tickets from: {advert.price_from_child}
+                          {currency}
+                        </Card.Text>
+                      </Card.Body>
+                    </Card>
+                    <br />
+                  </>
+                );
+              })}
+            </div>
           </>
         )}
         <br />
