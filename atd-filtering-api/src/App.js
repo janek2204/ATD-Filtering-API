@@ -87,7 +87,6 @@ function App() {
             ""
           )}
         </div>
-
         <br />
         {error ? (
           <div className="centering-div">
@@ -133,7 +132,7 @@ function App() {
         </div>
         <br />
         <div className="button">
-          {offset < meta.total_count ? (
+          {offset < meta.total_count && error.length === 0 ? (
             <Button variant="primary" onClick={handleNextPage} size="lg">
               More results
             </Button>
