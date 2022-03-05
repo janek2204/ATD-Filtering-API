@@ -5,54 +5,59 @@ import Container from "react-bootstrap/Container";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
+import InputGroup from "react-bootstrap/InputGroup";
 
 function App() {
   const [data, setData] = useState([]);
   const [newData, setNewData] = useState([]);
-  const [title, setTitle] = useState("");
-  const [error, setError] = useState("");
   const [offset, setOffset] = useState(0);
-  const [filtering, setFiltering] = useState([]);
+  const [meta, setMeta] = useState([]);
 
-  const currency = "£";
+  console.log("data --->", data);
+  console.log("new data ---->", newData);
+  console.log("offset --->", offset);
+  console.log("meta count----->", meta.total_count);
+
+  const [title, setTitle] = useState("");
+  const [error, setError] = useState([]);
+
+  const getData = async () => {
+    try {
+      const {
+        data: { data },
+        data: { meta },
+      } = await axios.get(
+        `https://global.atdtravel.com/api/products?geo=en&offset=${offset}&limit=1&title=${title}`
+      );
+      setMeta(meta);
+      if (newData.length > 0) {
+        return setData(data);
+      }
+      setNewData(data);
+    } catch (err) {
+      return setError(err.response.data);
+    }
+    setError([]);
+  };
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const {
-          data: { data },
-        } = await axios.get(
-          `https://global.atdtravel.com/api/products?geo=en&offset=${offset}&limit=10`
-        );
-        if (newData.length <= 0) setNewData(data);
-        else setData(data);
-      } catch (err) {
-        return setError(err.message);
-      }
-    };
-    getData();
-  }, [offset]);
+    setNewData(newData.concat(data));
+  }, [data]);
 
   const handleTyping = (event) => {
     setTitle(event.target.value);
-    handleFiltering();
+    setOffset(0);
   };
 
   const handleNextPage = () => {
-    setOffset((offset) => offset + 10);
-    setNewData(newData.concat(data));
+    setOffset(offset + 10);
+    getData();
   };
 
-  const handleFiltering = () => {
-    const toLower = title.toLowerCase();
-    const filter = newData.filter((advert) => {
-      const advertToLower = advert.title.toLowerCase();
-
-      if (advertToLower.includes(toLower)) {
-        return advert;
-      } else return false;
-    });
-    setFiltering(filter);
+  const handleSearch = () => {
+    setOffset(offset + 10);
+    getData();
+    setNewData([]);
   };
 
   return (
@@ -60,97 +65,65 @@ function App() {
       <Container>
         <div className="centering-div">
           <h1 className="result-text">Product search</h1>
-          <FormControl
-            placeholder="Type here...."
-            aria-describedby="basic-addon2"
-            onChange={handleTyping}
-          />
+          <h1></h1>
+          <InputGroup className="mb-3">
+            <FormControl
+              placeholder="Type here...."
+              aria-describedby="basic-addon2"
+              onChange={handleTyping}
+            />
+            {title.length <= 0 ? (
+              ""
+            ) : (
+              <Button
+                variant="outline-secondary"
+                id="button-addon2"
+                onClick={handleSearch}
+              >
+                Search
+              </Button>
+            )}
+          </InputGroup>
         </div>
 
         <br />
-        {error.length > 0 ? <h1>Something went wrong!</h1> : ""}
-        {!title.length ? (
-          <div className="cards-container">
-            {newData.map((advert) => {
-              return (
-                <Card
-                  className="bg-dark text-white"
-                  style={{ width: "20rem" }}
-                  key={advert.id}
-                >
-                  <Card.Img
-                    variant="top"
-                    src={advert.img_sml}
-                    alt={advert.dest}
-                    style={{
-                      minWidth: "19rem",
-                      minHeight: "15rem",
-                    }}
-                  />
-                  <Card.Body>
-                    <Card.Title>{advert.title}</Card.Title>
-                    <Card.Text>City: {advert.dest}</Card.Text>
-                    <Card.Text>
-                      Adult tikcets from: {advert.price_from_adult}
-                      {currency}
-                    </Card.Text>
-                    <Card.Text>
-                      Child tickets from: {advert.price_from_child}
-                      {currency}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              );
-            })}
-          </div>
-        ) : (
-          <>
-            <div className="centering-div">
-              <h2 className="result-text">
-                We have {filtering.length} atractions for you!
-              </h2>
-            </div>
-            <br />
-            <div className="cards-container">
-              {filtering.map((advert) => {
-                return (
-                  <Card
-                    className="bg-dark text-white"
-                    style={{ width: "20rem" }}
-                    key={advert.id}
-                  >
-                    <Card.Img
-                      variant="top"
-                      src={advert.img_sml}
-                      alt={advert.dest}
-                      style={{
-                        minWidth: "19rem",
-                        minHeight: "15rem",
-                      }}
-                    />
-                    <Card.Body>
-                      <Card.Title>{advert.title}</Card.Title>
-                      <Card.Text>City: {advert.dest}</Card.Text>
-                      <Card.Text>
-                        Adult tikcets from: {advert.price_from_adult}
-                        {currency}
-                      </Card.Text>
-                      <Card.Text>
-                        Child tickets from: {advert.price_from_child}
-                        {currency}
-                      </Card.Text>
-                    </Card.Body>
-                  </Card>
-                );
-              })}
-            </div>
-          </>
-        )}
+        {error ? <h1 className="result-text">{error.err_desc}</h1> : ""}
+        <div className="cards-container">
+          {newData.map((advert) => {
+            return (
+              <Card
+                className="bg-dark text-white"
+                style={{ width: "20rem" }}
+                key={advert.id}
+              >
+                <Card.Img
+                  variant="top"
+                  src={advert.img_sml}
+                  alt={advert.dest}
+                  style={{
+                    minWidth: "19rem",
+                    minHeight: "15rem",
+                  }}
+                />
+                <Card.Body>
+                  <Card.Title>{advert.title}</Card.Title>
+                  <Card.Text>City: {advert.dest}</Card.Text>
+                  <Card.Text>
+                    Adult tikcets from: {advert.price_from_adult}{" "}
+                    {meta.sale_cur}
+                  </Card.Text>
+                  <Card.Text>
+                    Child tickets from: {advert.price_from_child}{" "}
+                    {meta.sale_cur}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            );
+          })}
+        </div>
         <br />
         <div className="button">
-          <Button variant="primary" onClick={handleNextPage} size="lg">
-            More results
-          </Button>
+          <button onClick={handleNextPage}>clik</button>
         </div>
         <br />
       </Container>
