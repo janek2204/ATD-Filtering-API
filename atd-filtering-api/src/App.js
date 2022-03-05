@@ -58,8 +58,8 @@ function App() {
   return (
     <>
       <Container>
-        <div className="input">
-          <h1 className="text">Product search</h1>
+        <div className="centering-div">
+          <h1 className="result-text">Product search</h1>
           <FormControl
             placeholder="Type here...."
             aria-describedby="basic-addon2"
@@ -105,8 +105,8 @@ function App() {
           </div>
         ) : (
           <>
-            <div className="input">
-              <h2 className="text">
+            <div className="centering-div">
+              <h2 className="result-text">
                 We have {filtering.length} atractions for you!
               </h2>
             </div>
@@ -147,7 +147,7 @@ function App() {
           </>
         )}
         <br />
-        <div className="pagination-buttons">
+        <div className="button">
           <Button variant="primary" onClick={handleNextPage} size="lg">
             More results
           </Button>

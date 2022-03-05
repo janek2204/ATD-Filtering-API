@@ -11,18 +11,18 @@ input.form-control {
 }
 
 input,
-.pagination-buttons {
+.button {
   font-family: "Luckiest Guy", cursive !important;
 }
 
-.input {
+.centering-div {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
-.pagination-buttons {
+.button {
   display: flex;
   justify-content: center;
 }
@@ -35,7 +35,7 @@ input,
   gap: 2px;
 }
 
-.text {
+.result-text {
   font-family: "Luckiest Guy", cursive;
 }
 
