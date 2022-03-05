@@ -10,6 +10,11 @@ input.form-control {
   width: 25%;
 }
 
+input,
+.pagination-buttons {
+  font-family: "Luckiest Guy", cursive !important;
+}
+
 .input {
   display: flex;
   flex-direction: column;

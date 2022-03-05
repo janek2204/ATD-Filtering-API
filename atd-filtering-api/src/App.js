@@ -9,7 +9,6 @@ import Card from "react-bootstrap/Card";
 function App() {
   const [data, setData] = useState([]);
   const [newData, setNewData] = useState([]);
-
   const [title, setTitle] = useState("");
   const [error, setError] = useState("");
   const [offset, setOffset] = useState(0);
@@ -17,21 +16,20 @@ function App() {
 
   const currency = "£";
 
-  const getData = async () => {
-    try {
-      const {
-        data: { data },
-      } = await axios.get(
-        `https://global.atdtravel.com/api/products?geo=en&offset=${offset}&limit=10`
-      );
-      if (newData.length <= 0) setNewData(data);
-      else setData(data);
-    } catch (err) {
-      return setError(err.message);
-    }
-  };
-
   useEffect(() => {
+    const getData = async () => {
+      try {
+        const {
+          data: { data },
+        } = await axios.get(
+          `https://global.atdtravel.com/api/products?geo=en&offset=${offset}&limit=10`
+        );
+        if (newData.length <= 0) setNewData(data);
+        else setData(data);
+      } catch (err) {
+        return setError(err.message);
+      }
+    };
     getData();
   }, [offset]);
 
@@ -47,13 +45,12 @@ function App() {
 
   const handleFiltering = () => {
     const toLower = title.toLowerCase();
-
     const filter = newData.filter((advert) => {
       const advertToLower = advert.title.toLowerCase();
 
       if (advertToLower.includes(toLower)) {
         return advert;
-      } else return;
+      } else return false;
     });
     setFiltering(filter);
   };
@@ -76,10 +73,51 @@ function App() {
           <div className="cards-container">
             {newData.map((advert) => {
               return (
-                <>
+                <Card
+                  className="bg-dark text-white"
+                  style={{ width: "20rem" }}
+                  key={advert.id}
+                >
+                  <Card.Img
+                    variant="top"
+                    src={advert.img_sml}
+                    alt={advert.dest}
+                    style={{
+                      minWidth: "19rem",
+                      minHeight: "15rem",
+                    }}
+                  />
+                  <Card.Body>
+                    <Card.Title>{advert.title}</Card.Title>
+                    <Card.Text>City: {advert.dest}</Card.Text>
+                    <Card.Text>
+                      Adult tikcets from: {advert.price_from_adult}
+                      {currency}
+                    </Card.Text>
+                    <Card.Text>
+                      Child tickets from: {advert.price_from_child}
+                      {currency}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              );
+            })}
+          </div>
+        ) : (
+          <>
+            <div className="input">
+              <h2 className="text">
+                We have {filtering.length} atractions for you!
+              </h2>
+            </div>
+            <br />
+            <div className="cards-container">
+              {filtering.map((advert) => {
+                return (
                   <Card
                     className="bg-dark text-white"
                     style={{ width: "20rem" }}
+                    key={advert.id}
                   >
                     <Card.Img
                       variant="top"
@@ -103,51 +141,6 @@ function App() {
                       </Card.Text>
                     </Card.Body>
                   </Card>
-                  <br />
-                </>
-              );
-            })}
-          </div>
-        ) : (
-          <>
-            <div className="input">
-              <h2 className="text">
-                We have {filtering.length} atractions for you!
-              </h2>
-            </div>
-            <br />
-            <div className="cards-container">
-              {filtering.map((advert) => {
-                return (
-                  <>
-                    <Card
-                      className="bg-dark text-white"
-                      style={{ width: "20rem" }}
-                    >
-                      <Card.Img
-                        variant="top"
-                        src={advert.img_sml}
-                        alt={advert.dest}
-                        style={{
-                          minWidth: "19rem",
-                          minHeight: "15rem",
-                        }}
-                      />
-                      <Card.Body>
-                        <Card.Title>{advert.title}</Card.Title>
-                        <Card.Text>City: {advert.dest}</Card.Text>
-                        <Card.Text>
-                          Adult tikcets from: {advert.price_from_adult}
-                          {currency}
-                        </Card.Text>
-                        <Card.Text>
-                          Child tickets from: {advert.price_from_child}
-                          {currency}
-                        </Card.Text>
-                      </Card.Body>
-                    </Card>
-                    <br />
-                  </>
                 );
               })}
             </div>
