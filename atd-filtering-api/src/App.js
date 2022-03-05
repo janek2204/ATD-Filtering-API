@@ -121,8 +121,10 @@ function App() {
                     {meta.sale_cur}
                   </Card.Text>
                   <Card.Text>
-                    Child tickets from: {advert.price_from_child}{" "}
-                    {meta.sale_cur}
+                    {advert.price_from_child.length < 1
+                      ? "Child tickets from: N/A"
+                      : `Child tickets from: ${advert.price_from_child}
+                    ${meta.sale_cur}`}
                   </Card.Text>
                 </Card.Body>
               </Card>
