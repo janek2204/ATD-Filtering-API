@@ -49,6 +49,9 @@ function App() {
   };
 
   const handleSearch = () => {
+    if (error.length > 0) {
+      setOffset(0);
+    }
     setOffset(offset + 10);
     getData();
     setNewData([]);
