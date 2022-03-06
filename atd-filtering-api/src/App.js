@@ -6,6 +6,7 @@ import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import InputGroup from "react-bootstrap/InputGroup";
+import Spiner from "react-bootstrap/Spinner";
 
 function App() {
   const [data, setData] = useState([]);
@@ -14,8 +15,10 @@ function App() {
   const [meta, setMeta] = useState([]);
   const [title, setTitle] = useState("");
   const [error, setError] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const getData = async () => {
+    setLoading(true);
     try {
       const {
         data: { data },
@@ -23,6 +26,7 @@ function App() {
       } = await axios.get(
         `https://global.atdtravel.com/api/products?geo=en&offset=${offset}&limit=10&title=${title}`
       );
+      setLoading(false);
       setMeta(meta);
       if (newData.length > 0) {
         return setData(data);
@@ -96,39 +100,45 @@ function App() {
           ""
         )}
         <div className="cards-container">
-          {newData.map((advert) => {
-            return (
-              <Card
-                className="bg-dark text-white"
-                style={{ width: "20rem" }}
-                key={advert.id}
-              >
-                <Card.Img
-                  variant="top"
-                  src={advert.img_sml}
-                  alt={advert.dest}
-                  style={{
-                    minWidth: "19rem",
-                    minHeight: "15rem",
-                  }}
-                />
-                <Card.Body>
-                  <Card.Title>{advert.title}</Card.Title>
-                  <Card.Text>City: {advert.dest}</Card.Text>
-                  <Card.Text>
-                    Adult tikcets from: {advert.price_from_adult}{" "}
-                    {meta.sale_cur}
-                  </Card.Text>
-                  <Card.Text>
-                    {advert.price_from_child.length < 1
-                      ? "Child tickets from: N/A"
-                      : `Child tickets from: ${advert.price_from_child}
+          {!loading ? (
+            newData.map((advert) => {
+              return (
+                <Card
+                  className="bg-dark text-white"
+                  style={{ width: "20rem" }}
+                  key={advert.id}
+                >
+                  <Card.Img
+                    variant="top"
+                    src={advert.img_sml}
+                    alt={advert.dest}
+                    style={{
+                      minWidth: "19rem",
+                      minHeight: "15rem",
+                    }}
+                  />
+                  <Card.Body>
+                    <Card.Title>{advert.title}</Card.Title>
+                    <Card.Text>City: {advert.dest}</Card.Text>
+                    <Card.Text>
+                      Adult tikcets from: {advert.price_from_adult}{" "}
+                      {meta.sale_cur}
+                    </Card.Text>
+                    <Card.Text>
+                      {advert.price_from_child.length < 1
+                        ? "Child tickets from: N/A"
+                        : `Child tickets from: ${advert.price_from_child}
                     ${meta.sale_cur}`}
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            );
-          })}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              );
+            })
+          ) : (
+            <div className="spinner">
+              <Spiner animation="border" role="status" />
+            </div>
+          )}
         </div>
         <br />
         <div className="button">
