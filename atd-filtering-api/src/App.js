@@ -34,6 +34,7 @@ function App() {
       }
       setNewData(data);
     } catch (err) {
+      setLoading(false);
       return setError(err.response.data);
     }
     setError([]);
