@@ -46,6 +46,8 @@ input,
 }
 
 .spinner {
-  margin-left: auto;
-  margin-right: auto;
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  margin-bottom: 30px;
 }

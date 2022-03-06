@@ -19,6 +19,7 @@ function App() {
 
   const getData = async () => {
     setLoading(true);
+    setOffset(offset + 10);
     try {
       const {
         data: { data },
@@ -47,16 +48,10 @@ function App() {
     setOffset(0);
   };
 
-  const handleNextPage = () => {
-    setOffset(offset + 10);
-    getData();
-  };
-
   const handleSearch = () => {
     if (error.length > 0) {
       setOffset(0);
     }
-    setOffset(offset + 10);
     getData();
     setNewData([]);
   };
@@ -100,50 +95,51 @@ function App() {
           ""
         )}
         <div className="cards-container">
-          {!loading ? (
-            newData.map((advert) => {
-              return (
-                <Card
-                  className="bg-dark text-white"
-                  style={{ width: "20rem" }}
-                  key={advert.id}
-                >
-                  <Card.Img
-                    variant="top"
-                    src={advert.img_sml}
-                    alt={advert.dest}
-                    style={{
-                      minWidth: "19rem",
-                      minHeight: "15rem",
-                    }}
-                  />
-                  <Card.Body>
-                    <Card.Title>{advert.title}</Card.Title>
-                    <Card.Text>City: {advert.dest}</Card.Text>
-                    <Card.Text>
-                      Adult tikcets from: {advert.price_from_adult}{" "}
-                      {meta.sale_cur}
-                    </Card.Text>
-                    <Card.Text>
-                      {advert.price_from_child.length < 1
-                        ? "Child tickets from: N/A"
-                        : `Child tickets from: ${advert.price_from_child}
+          {newData.map((advert) => {
+            return (
+              <Card
+                className="bg-dark text-white"
+                style={{ width: "20rem" }}
+                key={advert.id}
+              >
+                <Card.Img
+                  variant="top"
+                  src={advert.img_sml}
+                  alt={advert.dest}
+                  style={{
+                    minWidth: "19rem",
+                    minHeight: "15rem",
+                  }}
+                />
+                <Card.Body>
+                  <Card.Title>{advert.title}</Card.Title>
+                  <Card.Text>City: {advert.dest}</Card.Text>
+                  <Card.Text>
+                    Adult tikcets from: {advert.price_from_adult}{" "}
+                    {meta.sale_cur}
+                  </Card.Text>
+                  <Card.Text>
+                    {advert.price_from_child.length < 1
+                      ? "Child tickets from: N/A"
+                      : `Child tickets from: ${advert.price_from_child}
                     ${meta.sale_cur}`}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              );
-            })
-          ) : (
-            <div className="spinner">
-              <Spiner animation="border" role="status" />
-            </div>
-          )}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            );
+          })}
         </div>
         <br />
+        {!loading ? (
+          ""
+        ) : (
+          <div className="spinner">
+            <Spiner animation="border" role="status" />
+          </div>
+        )}
         <div className="button">
           {offset < meta.total_count && error.length === 0 ? (
-            <Button variant="primary" onClick={handleNextPage} size="lg">
+            <Button variant="primary" onClick={getData} size="lg">
               More results
             </Button>
           ) : (
