@@ -14,7 +14,7 @@ function App() {
   const [offset, setOffset] = useState(0); // state for offset.
   const [meta, setMeta] = useState([]); // state for meta header from api response. containes offset,limit, currency and total count for search.
   const [title, setTitle] = useState(""); // state for title typed in search box.
-  const [error, setError] = useState([]); // state fo error respons.
+  const [error, setError] = useState([]);
   const [loading, setLoading] = useState(false); // state for loading spinner.
 
   const getData = async () => {
