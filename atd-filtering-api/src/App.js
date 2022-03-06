@@ -21,6 +21,7 @@ function App() {
     //* function to manage with fetching data from api. I used this function outside of useEffect in puropse to prevent running it while site is loaded for first time.
     setLoading(true); // changing state of spinner.
     setOffset(offset + 10); // every time getData will be called offset will be incresed by 10.
+    setError([]); // every time functions starts again is reseting error to its original state , empty array.
     try {
       // try and catch block for error handeling and preventing app from crushing.
       const {
@@ -39,7 +40,6 @@ function App() {
       setLoading(false); // if error occures, changing state of loading spinner.
       return setError(err.response.data); // returning error if occures, and saving message from error response to display.
     }
-    setError([]); // every time functions starts again is reseting error to its original state , empty array.
   };
 
   useEffect(() => {
@@ -54,11 +54,6 @@ function App() {
   };
 
   const handleSearch = () => {
-    // search button handler
-    if (error.length > 0) {
-      // to manage dispalying error message if previous call was a bad request.
-      setOffset(0);
-    }
     getData();
     setNewData([]); // setting newData into its original state to be ready for new request comming in.
   };
